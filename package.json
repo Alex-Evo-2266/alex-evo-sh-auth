@@ -6,6 +6,9 @@
   "module": "./dist/alex-evo-sh-auth.es.js",
   "types": "./dist/index.d.ts",
   "description": "auth lib for my project",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist"
   ],
