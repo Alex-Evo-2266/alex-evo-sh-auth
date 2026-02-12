@@ -1,6 +1,6 @@
 {
   "name": "alex-evo-sh-auth",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "main": "./dist/alex-evo-sh-auth.umd.js",
   "module": "./dist/alex-evo-sh-auth.es.js",
