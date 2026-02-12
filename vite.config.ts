@@ -15,7 +15,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       name: "alex-evo-sh-auth",
       formats: ["es", "umd"],
-      fileName: (format)=> `alex-evo-sh-sh-auth.${format}.js`,
+      fileName: (format)=> `alex-evo-sh-auth.${format}.js`,
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
