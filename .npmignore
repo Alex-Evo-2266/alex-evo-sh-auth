@@ -1,0 +1,9 @@
+# Vite config
+vite.config.*
+*.tsbuildinfo
+
+# dev / source
+src
+tests
+tsconfig*.json
+.vite

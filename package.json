@@ -5,16 +5,14 @@
   "main": "./dist/alex-evo-sh-auth.umd.js",
   "module": "./dist/alex-evo-sh-auth.es.js",
   "types": "./dist/index.d.ts",
+  "description": "auth lib for my project",
   "files": [
-    "dist",
-    "docs",
-    "README.md"
+    "dist"
   ],
   "exports": {
     ".": {
       "import": "./dist/alex-evo-sh-auth.es.js",
-      "require": "./dist/alex-evo-sh-auth.umd.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/alex-evo-sh-auth.umd.js"
     }
   },
   "scripts": {
