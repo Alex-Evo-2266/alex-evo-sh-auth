@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { AuthManager } from "../helpers/authManager"
 import { login, logout } from "../helpers/login"
 import { AuthContext } from "./AuthContext"
-import type { AuthData, MeData } from "../../types"
 import { apiFetch } from "../helpers/fatch"
 import type { Config } from "../helpers/config"
+import { AuthData, MeData } from "../types"
 
 type IAuthProvider = {
     authConfig: Config,

@@ -1,6 +1,6 @@
 import { createContext } from "react";
-import type { AuthData } from "../../types";
 import type { AuthManager } from "../helpers/authManager";
+import { AuthData } from "../types";
 
 
 type IAuthContext = {
