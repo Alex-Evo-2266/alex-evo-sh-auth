@@ -27,16 +27,16 @@
     "pub": "npm run build && npm version patch && npm publish"
   },
   "peerDependencies": {
-    "react": ">=16.8",
-    "react-dom": ">=16.8",
-    "react-router-dom": ">=5.1"
+    "react": "*",
+    "react-dom": "*",
+    "react-router-dom": "*"
   },
   "devDependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-router-dom": "^7.8.2",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@types/react-router-dom": "^5.3.3",
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
