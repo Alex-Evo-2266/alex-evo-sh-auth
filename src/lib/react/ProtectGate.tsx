@@ -1,12 +1,12 @@
 import { Outlet } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "./auth.hook";
 
 type ProtectGateProps = {
-    loadingPage?: React.ReactNode
+    loadingPage?: ReactNode
 }
 
-export function ProtectGate({loadingPage}:ProtectGateProps) {
+export function ProtectGate({loadingPage}:ProtectGateProps): ReactNode {
 
     const {authManager, login, user} = useAuth()
     const [loading, setLoading] = useState(true);
