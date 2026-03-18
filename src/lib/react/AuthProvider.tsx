@@ -1,21 +1,19 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { AuthManager } from "../helpers/authManager"
 import { login, logout } from "../helpers/login"
 import { AuthContext } from "./AuthContext"
 import { apiFetch } from "../helpers/fatch"
-import type { Config } from "../helpers/config"
 import { AuthData, MeData } from "../types"
 
 type IAuthProvider = {
-    authConfig: Config,
+    authManager: AuthManager,
     children: React.ReactNode
 }
 
-export const AuthProvider = ({children, authConfig}:IAuthProvider) => {
+export const AuthProvider = ({children, authManager}:IAuthProvider) => {
 
     const [user, setUser] = useState<AuthData | null>(null);
     const [loading, setLoading] = useState(true);
-    const authManager = useMemo(() => new AuthManager(authConfig),[authConfig])
 
     const loadMe = useCallback(async () => {
         setLoading(true);
