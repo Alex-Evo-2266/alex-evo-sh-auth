@@ -3,7 +3,8 @@ import type {AuthManager} from "./authManager"
 export async function apiFetch(
     authManager: AuthManager,
     url: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    errorRefresh?: ()=>void
 ) {
     let token = authManager.getToken()
 
@@ -27,6 +28,7 @@ export async function apiFetch(
     token = await authManager.getValidToken()
 
     if (!token) {
+        errorRefresh?.()
         return response;
     }
 
