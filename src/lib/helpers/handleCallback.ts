@@ -5,14 +5,20 @@ type TokenResponse = {
     user_id: string
 }
 
-export async function handleCallback(authManager: AuthManager) {
+export async function handleCallback(
+    authManager: AuthManager
+): Promise<void> {
 
     const params = new URLSearchParams(window.location.search);
+
     const code = params.get("code");
-    const savedState = sessionStorage.getItem("oauth_state");
     const state = params.get("state");
 
-    if (!code) return;
+    if (!code) {
+        throw new Error("Missing OAuth code");
+    }
+
+    const savedState = sessionStorage.getItem("oauth_state");
 
     if (!state || state !== savedState) {
         throw new Error("Invalid OAuth state");
@@ -20,23 +26,37 @@ export async function handleCallback(authManager: AuthManager) {
 
     const verifier = sessionStorage.getItem("pkce_verifier");
 
-    const response = await fetch(`${authManager.config.authServer}/token`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            client_id: authManager.config.clientId,
-            code,
-            code_verifier: verifier,
-        })
-    });
+    if (!verifier) {
+        throw new Error("Missing PKCE verifier");
+    }
+
+    const response = await fetch(
+        `${authManager.config.authServer}/token`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                client_id: authManager.config.clientId,
+                code,
+                code_verifier: verifier,
+            }),
+        }
+    );
+
+    if (!response.ok) {
+        const text = await response.text();
+
+        throw new Error(
+            `Token exchange failed: ${response.status} ${text}`
+        );
+    }
 
     const tokens: TokenResponse = await response.json();
 
-    localStorage.setItem(authManager.config.baseKey + "_access", tokens.access);
+    authManager.setToken(tokens.access);
 
-    window.history.replaceState({}, document.title, authManager.config.homePage);
-
-    window.location.href = authManager.config.homePage;
+    sessionStorage.removeItem("oauth_state");
+    sessionStorage.removeItem("pkce_verifier");
 }

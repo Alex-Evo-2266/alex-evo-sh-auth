@@ -1,22 +1,38 @@
-import { useContext, useEffect } from "react"
-import { handleCallback } from "../helpers/handleCallback"
-import { AuthContext } from "./AuthContext"
-
+import { useContext, useEffect, useRef } from "react";
+import { handleCallback } from "../helpers/handleCallback";
+import { AuthContext } from "./AuthContext";
 
 export const CallbackPage = () => {
+    const { authManager, loadMe } = useContext(AuthContext);
 
-    const {authManager, loadMe} = useContext(AuthContext)
+    const processedRef = useRef(false);
 
-    useEffect(()=>{
-        if(!authManager)return
+    useEffect(() => {
+        if (!authManager || processedRef.current) {
+            return;
+        }
 
-        handleCallback(authManager)
-        loadMe()
-    },[handleCallback, authManager, loadMe])
+        processedRef.current = true;
 
-    return(
-        <div>
+        const authenticate = async () => {
+            try {
+                await handleCallback(authManager);
+                await loadMe();
 
-        </div>
-    )
-}
+                window.location.replace(
+                    authManager.config.homePage
+                );
+            } catch (error) {
+                console.error("Authentication callback failed:", error);
+
+                window.location.replace(
+                    authManager.config.homePage
+                );
+            }
+        };
+
+        authenticate();
+    }, [authManager, loadMe]);
+
+    return <div>Авторизация...</div>;
+};
