@@ -34,6 +34,7 @@ export async function handleCallback(
         `${authManager.config.authServer}/token`,
         {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -54,6 +55,9 @@ export async function handleCallback(
     }
 
     const tokens: TokenResponse = await response.json();
+    if (typeof tokens.access !== "string" || !tokens.access) {
+        throw new Error("Token response did not contain an access token");
+    }
 
     authManager.setToken(tokens.access);
 

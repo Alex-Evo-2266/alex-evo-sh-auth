@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect } from "react";
 import { useAuth } from "./auth.hook";
 
 type ProtectGateProps = {
@@ -8,27 +8,16 @@ type ProtectGateProps = {
 
 export function ProtectGate({loadingPage}:ProtectGateProps): ReactNode {
 
-    const {authManager, login, user} = useAuth()
-    const [loading, setLoading] = useState(true);
-    
+    const {authManager, login, loading} = useAuth()
+    const token = authManager?.getToken() ?? null
 
     useEffect(() => {
-        if(!authManager)return
-        const token = authManager.getToken()
-
-        if (!token) {
+        if (authManager && !loading && !token) {
             login()
-        } else {
-            setLoading(false);
         }
-    }, [authManager, user]);
+    }, [authManager, loading, login, token]);
 
-    if(!authManager)
-    {
-        return <p>invalud config</p>
-    }
-
-    if (loading) {
+    if (loading || !token) {
         return loadingPage ?? <div>Loading...</div>
     }
 

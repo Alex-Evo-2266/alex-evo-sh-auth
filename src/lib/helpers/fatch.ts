@@ -11,6 +11,7 @@ export async function apiFetch(
     const doFetch = (token: string | null) => {
         return fetch(url, {
             ...options,
+            credentials: options.credentials ?? "include",
             headers: {
                 ...options.headers,
                 Authorization: token ? `Bearer ${token}` : ""
@@ -18,7 +19,7 @@ export async function apiFetch(
         });
     };
 
-    let response = await doFetch(token);
+    const response = await doFetch(token);
 
     if (response.status !== 401) {
         return response;

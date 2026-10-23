@@ -6,7 +6,7 @@ import { AuthData } from "../types";
 type IAuthContext = {
     login: () => void
     logout: () => void
-    loadMe: () => void
+    loadMe: () => Promise<void>
     authManager: AuthManager | null
     user: AuthData | null
     loading: boolean
@@ -15,7 +15,7 @@ type IAuthContext = {
 export const AuthContext = createContext<IAuthContext>({
     login: ()=>{},
     logout: ()=>{},
-    loadMe: ()=>{},
+    loadMe: async ()=>{},
     authManager: null,
     user: null,
     loading: false

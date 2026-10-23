@@ -1,11 +1,12 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { handleCallback } from "../helpers/handleCallback";
 import { AuthContext } from "./AuthContext";
 
 export const CallbackPage = () => {
-    const { authManager, loadMe } = useContext(AuthContext);
+    const { authManager, login } = useContext(AuthContext);
 
     const processedRef = useRef(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!authManager || processedRef.current) {
@@ -17,22 +18,24 @@ export const CallbackPage = () => {
         const authenticate = async () => {
             try {
                 await handleCallback(authManager);
-                await loadMe();
-
-                window.location.replace(
-                    authManager.config.homePage
-                );
+                window.location.replace(authManager.config.homePage);
             } catch (error) {
                 console.error("Authentication callback failed:", error);
-
-                window.location.replace(
-                    authManager.config.homePage
-                );
+                setError("Не удалось завершить вход. Попробуйте снова.");
             }
         };
 
         authenticate();
-    }, [authManager, loadMe]);
+    }, [authManager]);
+
+    if (error) {
+        return (
+            <div role="alert">
+                <p>Не удалось завершить вход: {error}</p>
+                <button type="button" onClick={login}>Повторить вход</button>
+            </div>
+        );
+    }
 
     return <div>Авторизация...</div>;
 };

@@ -16,53 +16,50 @@ export const AuthProvider = ({children, authManager}:IAuthProvider) => {
     const [loading, setLoading] = useState(true);
 
     const loadMe = useCallback(async () => {
-        setLoading(true);
-
-        const access = localStorage.getItem(authManager.config.baseKey + "_access");
-
-        if (!access) {
-            setUser(null);
-            setLoading(false);
-            return;
-        }
-
         try {
-        const resp = await apiFetch(authManager, `${authManager.config.authServer}/me`, {
-            headers: {
-                Authorization: `Bearer ${access}`
+            const token = await authManager.getValidToken();
+            if (!token) {
+                setUser(null);
+                return;
             }
-        });
 
-        if (!resp.ok) throw new Error("not found");
+            const resp = await apiFetch(authManager, `${authManager.config.authServer}/me`);
+            if (resp.status === 401) {
+                authManager.setToken(null);
+                setUser(null);
+                return;
+            }
+            if (!resp.ok) {
+                throw new Error(`Failed to load current user: ${resp.status}`);
+            }
 
-        const data: MeData = await resp.json();
-
-        setUser({
-            role: data.role.role_name,
-            userId: data.user_id,
-            userName: data.user_name,
-            privileges: data.role.privileges.map(i => i.privilege.trim())
-        });
-
-        } catch {
+            const data: MeData = await resp.json();
+            setUser({
+                role: data.role.role_name,
+                userId: data.user_id,
+                userName: data.user_name,
+                privileges: data.role.privileges.map(i => i.privilege.trim())
+            });
+        } catch (error) {
+            console.error("Failed to load current user:", error);
             setUser(null);
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
-    },[])
+    }, [authManager])
 
     useEffect(() => {
-        loadMe();
+        void Promise.resolve().then(loadMe);
     }, [loadMe]);
 
     const loginHandler = useCallback(() => {
         login(authManager)
-    },[login, authManager])
+    }, [authManager])
 
     const logoutHandler = useCallback(()=>{
         logout(authManager)
         setUser(null)
-    },[logout, authManager])
+    }, [authManager])
 
     return(
         <AuthContext.Provider value={{loadMe, loading, user, login: loginHandler, authManager, logout: logoutHandler}}>

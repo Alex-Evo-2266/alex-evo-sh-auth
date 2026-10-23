@@ -2,9 +2,9 @@ import type { Config } from "./config";
 
 export async function refreshToken(authConfig: Config) {
 
-
     const response = await fetch(`${authConfig.authServer}/refresh`, {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -19,9 +19,16 @@ export async function refreshToken(authConfig: Config) {
         return null
     }
 
-    const tokens = await response.json();
+    if (!response.ok) {
+        throw new Error(`Token refresh failed: ${response.status} ${await response.text()}`);
+    }
+
+    const tokens: { access?: unknown } = await response.json();
+
+    if (typeof tokens.access !== "string" || !tokens.access) {
+        throw new Error("Token refresh response did not contain an access token");
+    }
 
     localStorage.setItem(authConfig.baseKey + "_access", tokens.access);
-
     return tokens.access;
 }
